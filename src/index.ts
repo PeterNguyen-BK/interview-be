@@ -5,15 +5,15 @@ import socketIO from 'socket.io';
 
 dotenv.config();
 
-const app: Express = express();
+export const app: Express = express();
 const port = process.env.PORT;
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
+  res.json({message: 'Express + TypeScript Server'});
 });
 
-const server: http.Server = http.createServer(app);
-const io: socketIO.Server = new socketIO.Server(server, {
+export const server: http.Server = http.createServer(app);
+export const io: socketIO.Server = new socketIO.Server(server, {
   cors: {
     origin: "http://localhost:5173",
     methods: ["GET", "POST"]
@@ -26,15 +26,13 @@ let dataToSend = {
 }
 
 io.on('connection', (socket: socketIO.Socket) => {
-  console.log('Connected socket', socket.id)
+  console.log('Connected socket')
 
   socket.on('orange', (data) => {
-    console.log(data)
     dataToSend.orange++;
     socket.broadcast.emit('orange', dataToSend.orange)
   })
   socket.on('blue', (data) => {
-    console.log(data)
     dataToSend.blue++;
     socket.broadcast.emit('blue', dataToSend.blue)
   })
