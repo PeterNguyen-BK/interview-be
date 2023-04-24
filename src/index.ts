@@ -19,21 +19,14 @@ export const io: socketIO.Server = new socketIO.Server(server, {
   }
 });
 
-let dataToSend = {
-  orange: 0,
-  blue: 0
-}
-
 io.on('connection', (socket: socketIO.Socket) => {
   console.log('Connected socket')
 
   socket.on('orange', (data) => {
-    dataToSend.orange++;
-    socket.broadcast.emit('orange', dataToSend.orange)
+    socket.broadcast.emit('orange', data)
   })
   socket.on('blue', (data) => {
-    dataToSend.blue++;
-    socket.broadcast.emit('blue', dataToSend.blue)
+    socket.broadcast.emit('blue', data)
   })
 
   socket.on('disconnect', () => {
