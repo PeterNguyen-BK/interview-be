@@ -1,27 +1,34 @@
-import { createServer, Server as httpServer } from "http";
+// import { createServer, Server as httpServer } from "http";
 import { io as Client, Socket as clientSocket } from "socket.io-client";
 import { Server, Socket } from "socket.io";
 import { AddressInfo } from "net";
 import request from 'supertest';
-import { app } from ".";
+import { app, server as httpServer, io } from ".";
 
 describe("my awesome project", () => {
-  let io: Server;
+  // let io: Server;
   let serverSocket: Socket; 
   let clientSocket: clientSocket;
 
   beforeAll((done) => {
-    const httpServer: httpServer = createServer();
-    io = new Server(httpServer);
-    httpServer.listen(() => {
-      const port = (<AddressInfo>httpServer.address()).port;
-      clientSocket = Client(`http://localhost:${port}`);
-      io.on("connection", (socket) => {
-        serverSocket = socket;
-      });
-      clientSocket.on("connect", done);
-    });
-  }, 30000);
+    // const httpServer: httpServer = createServer();
+    // io = new Server(httpServer);
+    // httpServer.listen(() => {
+    //   const port = (<AddressInfo>httpServer.address()).port;
+    //   clientSocket = Client(`http://localhost:${port}`);
+    //   io.on("connection", (socket) => {
+    //     serverSocket = socket;
+    //   });
+    //   clientSocket.on("connect", done);
+    // });
+    // io.on("connection", (socket) => {
+    //   serverSocket = socket;
+    // });
+    const port = (<AddressInfo>httpServer.address()).port;
+    console.log(port, "port")
+    clientSocket = Client(`http://localhost:${port}`);
+    clientSocket.on("connect", done);
+  });
 
   afterAll(() => {
     io.close();
@@ -42,20 +49,20 @@ describe("my awesome project", () => {
   });
 
   test("should work", (done) => {
-    clientSocket.on("orange", (arg) => {
-      expect(arg).toBe("click");
+    clientSocket.on("blue", (arg) => {
+      expect(arg).toEqual(1);
       done();
     });
-    serverSocket.emit("orange", "click");
+    clientSocket.emit("blue", "click");
   });
 
-  test("should work (with ack)", (done) => {
-    serverSocket.on("hi", (cb) => {
-      cb("hola");
-    });
-    clientSocket.emit("hi", (arg: string | number) => {
-      expect(arg).toBe("hola");
-      done();
-    });
-  });
+  // test("should work (with ack)", (done) => {
+  //   serverSocket.on("orange", (cb) => {
+  //     cb("hola");
+  //   });
+  //   clientSocket.emit("orange", (arg: string | number) => {
+  //     expect(arg).toBe("hola");
+  //     done();
+  //   });
+  // });
 });

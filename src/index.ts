@@ -15,8 +15,7 @@ app.get('/', (req: Request, res: Response) => {
 export const server: http.Server = http.createServer(app);
 export const io: socketIO.Server = new socketIO.Server(server, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
+    origin: "*"
   }
 });
 
